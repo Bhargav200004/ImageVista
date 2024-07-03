@@ -15,20 +15,15 @@ import androidx.room.util.TableInfo
 import com.example.imagevista.data.remote.dto.UnsplashImageDto
 import com.example.imagevista.domain.model.UnsplashImage
 import com.example.imagevista.ui.component.ImageCard
+import com.example.imagevista.ui.component.ImageVerticalGrid
 
 @Composable
 fun HomeScreen(
-    image : List<UnsplashImage>
+    image : List<UnsplashImage>,
+    onImageClick : (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ){
-        image.forEach{image->
-            ImageCard(image = image)
-        }
-
-
-    }
+   ImageVerticalGrid(
+       images = image,
+       onImageClickable = onImageClick
+   )
 }

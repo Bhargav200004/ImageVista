@@ -16,7 +16,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             ImageVistaTheme {
                 val viewModel = viewModel<HomeScreenViewModel>()
-                HomeScreen(image = viewModel.image)
+                HomeScreen(
+                    image = viewModel.image,
+                    onImageClick = {}
+                )
             }
         }
     }
