@@ -11,9 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.imagevista.ui.homeScreen.HomeScreen
-import com.example.imagevista.ui.homeScreen.HomeScreenViewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.imagevista.ui.navigation.NavGraphSetup
 import com.example.imagevista.ui.theme.ImageVistaTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,19 +23,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ImageVistaTheme {
+                val navController = rememberNavController()
                 val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
-                val viewModel = viewModel<HomeScreenViewModel>()
+
                 Scaffold (
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .nestedScroll(scrollBehaviour.nestedScrollConnection)
                 ){
-                    HomeScreen(
-                        scrollBehaviour = scrollBehaviour,
-                        image = viewModel.image,
-                        onImageClick = {},
-                        onSearchClick = {},
-                        onFABClick = {}
+                    NavGraphSetup(
+                        navController = navController,
+                        scrollBehaviour = scrollBehaviour
                     )
+
                 }
             }
         }
