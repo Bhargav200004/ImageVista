@@ -1,25 +1,44 @@
 package com.example.imagevista.di
 
 import com.example.imagevista.data.remote.UnsplashApiService
-import com.example.imagevista.util.Constant.BASE_URL
+import com.example.imagevista.data.repository.ImageRepositoryImpl
+import com.example.imagevista.data.util.Constant.BASE_URL
+import com.example.imagevista.domain.repository.ImageRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private val contentType = "application/json".toMediaType()
-    private val json = Json{ ignoreUnknownKeys = true }
+    @Provides
+    @Singleton
+    fun provideUnsplashApiService() : UnsplashApiService{
+        val contentType = "application/json".toMediaType()
+        val json = Json{ ignoreUnknownKeys = true }
 
-    private val retrofit = Retrofit.Builder()
-        .addConverterFactory(json.asConverterFactory(contentType))
-        .baseUrl(BASE_URL)
-        .build()
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .baseUrl(BASE_URL)
+            .build()
 
-    val retrofitApiService : UnsplashApiService by lazy {
-        retrofit.create(UnsplashApiService::class.java)
+        return retrofit.create(UnsplashApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageRepository(
+        apiService: UnsplashApiService
+    ) : ImageRepository{
+        return ImageRepositoryImpl(apiService)
     }
 
 }

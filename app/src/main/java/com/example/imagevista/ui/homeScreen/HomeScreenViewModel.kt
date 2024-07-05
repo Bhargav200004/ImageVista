@@ -11,9 +11,15 @@ import com.example.imagevista.data.remote.UnsplashApiService
 import com.example.imagevista.data.remote.dto.UnsplashImageDto
 import com.example.imagevista.di.AppModule
 import com.example.imagevista.domain.model.UnsplashImage
+import com.example.imagevista.domain.repository.ImageRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeScreenViewModel : ViewModel() {
+@HiltViewModel
+class HomeScreenViewModel @Inject constructor(
+    private val repository: ImageRepository
+) : ViewModel() {
 
     var image: List<UnsplashImage> by mutableStateOf(emptyList())
         private set
@@ -24,8 +30,8 @@ class HomeScreenViewModel : ViewModel() {
 
     private fun getImage() {
         viewModelScope.launch {
-            val result = AppModule.retrofitApiService.getEditorialFeedImage()
-            image = result.toDomainModelList();
+            val result = repository.getEditorialFeedImage()
+            image = result;
         }
     }
 

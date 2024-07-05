@@ -1,4 +1,4 @@
-package com.example.imagevista.util
+package com.example.imagevista.data.util
 
 import com.example.imagevista.BuildConfig
 

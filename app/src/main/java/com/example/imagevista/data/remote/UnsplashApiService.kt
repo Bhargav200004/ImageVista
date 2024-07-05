@@ -1,7 +1,7 @@
 package com.example.imagevista.data.remote
 
 import com.example.imagevista.data.remote.dto.UnsplashImageDto
-import com.example.imagevista.util.Constant.API_KEY
+import com.example.imagevista.data.util.Constant.API_KEY
 import retrofit2.http.GET
 import retrofit2.http.Headers
 
