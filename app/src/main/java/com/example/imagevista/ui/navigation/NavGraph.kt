@@ -54,7 +54,8 @@ fun NavGraphSetup(
             val fullImageViewModel : FullImageViewModel = hiltViewModel()
             FullImageScreen(
                 image = fullImageViewModel.image,
-                onBackButtonClick = { navController.navigateUp() }
+                onBackButtonClick = { navController.navigateUp() },
+                onPhotographerImgClick = {}
             )
         }
 
