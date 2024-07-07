@@ -13,6 +13,7 @@ import com.example.imagevista.ui.fullImageScreen.FullImageScreen
 import com.example.imagevista.ui.fullImageScreen.FullImageViewModel
 import com.example.imagevista.ui.homeScreen.HomeScreen
 import com.example.imagevista.ui.homeScreen.HomeScreenViewModel
+import com.example.imagevista.ui.profileScreen.ProfileScreen
 import com.example.imagevista.ui.searchScreen.SearchScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,12 +56,18 @@ fun NavGraphSetup(
             FullImageScreen(
                 image = fullImageViewModel.image,
                 onBackButtonClick = { navController.navigateUp() },
-                onPhotographerImgClick = {}
+                onPhotographerNameClick = { profileLink->
+                    navController.navigate(Routes.ProfileScreen(profileLink))
+                }
             )
         }
 
-        composable<Routes.ProfileScreen> {
-
+        composable<Routes.ProfileScreen> { backStackentry ->
+            val profileLink = backStackentry.toRoute<Routes.ProfileScreen>().profileLink
+            ProfileScreen(
+                profileLink = profileLink,
+                onBackButtonClick = { navController.navigateUp()}
+            )
         }
     }
 }

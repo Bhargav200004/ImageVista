@@ -44,7 +44,7 @@ import kotlin.math.max
 fun FullImageScreen(
     image: UnsplashImage?,
     onBackButtonClick: () -> Unit,
-    onPhotographerImgClick: (String) -> Unit,
+    onPhotographerNameClick: (String) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
@@ -139,7 +139,7 @@ fun FullImageScreen(
                 .padding(horizontal = 5.dp, vertical = 40.dp),
             image = image,
             onBackButtonClick = onBackButtonClick,
-            onPhotographerImgClick = onPhotographerImgClick,
+            onPhotographerNameClick = onPhotographerNameClick,
             onDownloadImgClick = {},
             isVisible = showBars
         )
