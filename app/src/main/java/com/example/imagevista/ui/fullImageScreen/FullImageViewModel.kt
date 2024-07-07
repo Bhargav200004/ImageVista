@@ -1,6 +1,5 @@
 package com.example.imagevista.ui.fullImageScreen
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,8 +11,12 @@ import com.example.imagevista.domain.model.UnsplashImage
 import com.example.imagevista.domain.repository.Downloader
 import com.example.imagevista.domain.repository.ImageRepository
 import com.example.imagevista.ui.navigation.Routes
+import com.example.imagevista.ui.util.SnackBarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +27,9 @@ class FullImageViewModel @Inject constructor(
 ): ViewModel()   {
 
     private val imageId = savedStateHandle.toRoute<Routes.FullImageScreen>().imageId
+
+    private val _snackBarEvent = Channel<SnackBarEvent>()
+    val snackBarEvent = _snackBarEvent.receiveAsFlow()
 
     var image : UnsplashImage? by mutableStateOf(null)
         private set
@@ -38,8 +44,15 @@ class FullImageViewModel @Inject constructor(
                 val result = repository.getImage(imageId = imageId)
                 image = result
             }
+            catch (e : UnknownHostException){
+                _snackBarEvent.send(
+                    element = SnackBarEvent(message = "No Internet Connection. Please check you network.")
+                )
+            }
             catch (e : Exception){
-                e.printStackTrace()
+                _snackBarEvent.send(
+                    element = SnackBarEvent(message = "SomeThing went wrong: ${e.message}")
+                )
             }
         }
     }
@@ -50,7 +63,9 @@ class FullImageViewModel @Inject constructor(
                 downloader.downloadFile(uri , title)
             }
             catch (e : Exception){
-                e.printStackTrace()
+                _snackBarEvent.send(
+                    element = SnackBarEvent(message = "SomeThing went wrong: ${e.message}")
+                )
             }
         }
     }

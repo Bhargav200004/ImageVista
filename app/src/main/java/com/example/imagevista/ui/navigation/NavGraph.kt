@@ -1,6 +1,7 @@
 package com.example.imagevista.ui.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,17 +21,20 @@ import com.example.imagevista.ui.searchScreen.SearchScreen
 @Composable
 fun NavGraphSetup(
     navController: NavHostController,
-    scrollBehaviour: TopAppBarScrollBehavior
+    scrollBehaviour: TopAppBarScrollBehavior,
+    snackBarHostState: SnackbarHostState
 ) {
     NavHost(
         navController = navController,
         startDestination = Routes.HomeScreen
     ) {
         composable<Routes.HomeScreen> {
-            val viewModel : HomeScreenViewModel = hiltViewModel()
+            val homeViewModel : HomeScreenViewModel = hiltViewModel()
             HomeScreen(
+                snackBarHostState = snackBarHostState,
+                snackBarEvent = homeViewModel.snackBarEvent,
                 scrollBehaviour = scrollBehaviour,
-                image = viewModel.image,
+                image = homeViewModel.image,
                 onImageClick = { imageId ->
                     navController.navigate(Routes.FullImageScreen(imageId = imageId))
                 },
@@ -54,6 +58,8 @@ fun NavGraphSetup(
         composable<Routes.FullImageScreen> {
             val fullImageViewModel : FullImageViewModel = hiltViewModel()
             FullImageScreen(
+                snackBarHostState = snackBarHostState,
+                snackBarEvent = fullImageViewModel.snackBarEvent,
                 image = fullImageViewModel.image,
                 onBackButtonClick = { navController.navigateUp() },
                 onPhotographerNameClick = { profileLink->

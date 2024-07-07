@@ -8,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,13 +53,14 @@ class MainActivity : ComponentActivity() {
             var backgroundColor by remember { mutableStateOf(Color.Red) }
 
             LaunchedEffect(key1 = status) {
-                when(status){
-                    NetworkStatus.Connected ->{
+                when (status) {
+                    NetworkStatus.Connected -> {
                         message = "Connected to Internet"
                         backgroundColor = CustomGreen
                         delay(5000)
                         showMessage = false
                     }
+
                     NetworkStatus.DisConnected -> {
                         showMessage = true
                         message = "No Internet Connection"
@@ -71,8 +74,11 @@ class MainActivity : ComponentActivity() {
             ImageVistaTheme {
                 val navController = rememberNavController()
                 val scrollBehaviour = TopAppBarDefaults.enterAlwaysScrollBehavior()
+                val snackBarHostState = remember { SnackbarHostState() }
 
-                Scaffold (
+
+                Scaffold(
+                    snackbarHost = { SnackbarHost(hostState = snackBarHostState)},
                     modifier = Modifier
                         .fillMaxSize()
                         .nestedScroll(scrollBehaviour.nestedScrollConnection),
@@ -83,8 +89,9 @@ class MainActivity : ComponentActivity() {
                             backGroundColor = backgroundColor
                         )
                     }
-                ){
+                ) {
                     NavGraphSetup(
+                        snackBarHostState = snackBarHostState,
                         navController = navController,
                         scrollBehaviour = scrollBehaviour
                     )

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,15 +41,18 @@ import com.example.imagevista.ui.component.DownloadOptionsBottomSheet
 import com.example.imagevista.ui.component.FullImageViewTopBar
 import com.example.imagevista.ui.component.ImageDownloadOption
 import com.example.imagevista.ui.component.ImageVistaLoadingBar
+import com.example.imagevista.ui.util.SnackBarEvent
 import com.example.imagevista.ui.util.rememberWindowInsetsController
 import com.example.imagevista.ui.util.toggleStatusBars
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.math.max
-import kotlin.math.truncate
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FullImageScreen(
+    snackBarHostState : SnackbarHostState,
+    snackBarEvent:Flow<SnackBarEvent>,
     image: UnsplashImage?,
     onBackButtonClick: () -> Unit,
     onPhotographerNameClick: (String) -> Unit,
@@ -64,6 +68,16 @@ fun FullImageScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isDownloadBottomSheetOpen by remember { mutableStateOf(false) }
 
+    
+    LaunchedEffect(key1 = true) {
+        snackBarEvent.collect{event->
+            snackBarHostState.showSnackbar(
+                message = event.message,
+                duration = event.duration
+            )
+
+        }
+    }
 
     LaunchedEffect(key1 = Unit) {
       windowInsetsController.toggleStatusBars(show = showBars)
@@ -135,6 +149,7 @@ fun FullImageScreen(
                 painter = if (!isError.not()) painterResource(id = R.drawable.ic_error) else imageLoader,
                 contentDescription = null,
                 modifier = Modifier
+                    .fillMaxSize()
                     .transformable(transformState)
                     .combinedClickable(
                         onDoubleClick = {
