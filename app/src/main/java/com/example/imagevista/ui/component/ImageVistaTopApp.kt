@@ -1,5 +1,10 @@
 package com.example.imagevista.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -77,54 +82,62 @@ fun FullImageViewTopBar(
     image: UnsplashImage?,
     onBackButtonClick: () -> Unit,
     onPhotographerImgClick: (String) -> Unit,
-    onDownloadImgClick: () -> Unit
+    onDownloadImgClick: () -> Unit,
+    isVisible : Boolean
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = fadeIn() + slideInVertically(),
+        exit = fadeOut() + slideOutVertically()
     ) {
-        IconButton(
-            onClick = onBackButtonClick
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                contentDescription = "Back Button"
+            IconButton(
+                onClick = onBackButtonClick
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = "Back Button"
+                )
+            }
+            AsyncImage(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clip(CircleShape),
+                model = image?.photographerProfileImgUrl,
+                contentDescription = null
             )
-        }
-        AsyncImage(
-            modifier = Modifier
-                .size(30.dp)
-                .clip(CircleShape),
-            model = image?.photographerProfileImgUrl,
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.width(30.dp))
-        Column(
-            modifier = Modifier
-                .clickable {
-                    image?.let {
-                        onPhotographerImgClick(it.photographerProfileImgUrl)
+            Spacer(modifier = Modifier.width(30.dp))
+            Column(
+                modifier = Modifier
+                    .clickable {
+                        image?.let {
+                            onPhotographerImgClick(it.photographerProfileImgUrl)
+                        }
+
                     }
+            ) {
+                Text(
+                    text = image?.photographerName ?: "",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = image?.photographerUsername ?: "",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = { onDownloadImgClick() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_download),
+                    contentDescription = "Download Image",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
 
-                }
-        ) {
-            Text(
-                text = image?.photographerName ?: "",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = image?.photographerUsername ?: "",
-                style = MaterialTheme.typography.titleMedium
-            )
         }
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { onDownloadImgClick() }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_download),
-                contentDescription = "Download Image",
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-        }
-
     }
+
 }

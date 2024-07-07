@@ -1,5 +1,6 @@
 package com.example.imagevista.ui.fullImageScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -12,10 +13,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -58,9 +55,13 @@ fun FullImageScreen(
       windowInsetsController.toggleStatusBars(show = showBars)
     }
 
+    BackHandler(enabled = !showBars) {
+        windowInsetsController.toggleStatusBars(show = true)
+        onBackButtonClick()
+    }
+
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
@@ -139,7 +140,8 @@ fun FullImageScreen(
             image = image,
             onBackButtonClick = onBackButtonClick,
             onPhotographerImgClick = onPhotographerImgClick,
-            onDownloadImgClick = {}
+            onDownloadImgClick = {},
+            isVisible = showBars
         )
     }
 }
