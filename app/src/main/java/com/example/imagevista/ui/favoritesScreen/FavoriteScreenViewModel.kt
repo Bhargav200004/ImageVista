@@ -1,4 +1,4 @@
-package com.example.imagevista.ui.searchScreen
+package com.example.imagevista.ui.favoritesScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,32 +20,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchScreenViewModel @Inject constructor(
+class FavoriteScreenViewModel @Inject constructor(
     private val repository: ImageRepository
 ) : ViewModel() {
 
     private val _snackBarEvent = Channel<SnackBarEvent>()
     val snackBarEvent = _snackBarEvent.receiveAsFlow()
 
-    private val _searchImages = MutableStateFlow<PagingData<UnsplashImage>>(PagingData.empty())
-    val searchImage = _searchImages
 
-    fun searchImage(query : String){
-        viewModelScope.launch {
-            try {
-                repository.searchImages(query)
-                    .cachedIn(viewModelScope)
-                    .collect{ _searchImages.value = it }
-            }
-            catch (e : Exception){
-                _snackBarEvent.send(
-                    SnackBarEvent(
-                        message = "Something went wrong. ${e.message}"
-                    )
+    val favoriteImage : StateFlow<PagingData<UnsplashImage>> = repository.getAllFavoriteImages()
+        .catch {
+            _snackBarEvent.send(
+                SnackBarEvent(
+                    message = "Something went wrong. ${it.message}"
                 )
-            }
+            )
         }
-    }
+        .cachedIn(viewModelScope)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            initialValue = PagingData.empty()
+        )
+
 
     val favoriteImageIds : StateFlow<List<String>> = repository.getFavoriteImageIds()
         .catch {

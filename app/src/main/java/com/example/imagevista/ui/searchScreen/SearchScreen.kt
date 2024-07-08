@@ -53,11 +53,13 @@ fun SearchScreen(
     snackBarHostState : SnackbarHostState,
     snackBarEvent: Flow<SnackBarEvent>,
     searchImages : LazyPagingItems<UnsplashImage>,
+    favoriteImageIds : List<String>,
     searchQuery : String,
     onSearchQueryChange : (String) -> Unit,
     onImageClick: (String) -> Unit,
     onSearch : (String) -> Unit,
-    onBackButtonClick : () -> Unit
+    onBackButtonClick : () -> Unit,
+    onToggleFavoriteStatus : (UnsplashImage) -> Unit
 ) {
 
     val focusRequester = remember { FocusRequester() }
@@ -157,13 +159,15 @@ fun SearchScreen(
             ImageVerticalGrid(
                 images = searchImages,
                 onImageClickable = onImageClick,
+                favoriteImageIds = favoriteImageIds,
                 onImageDragStart = {image ->
                     activeImage = image
                     showImagePreview = true
                 },
                 onImageDragEnd ={
                     showImagePreview = false
-                }
+                },
+                onToggleFavoriteStatus = onToggleFavoriteStatus
             )
         }
         ZoomedImageCard(

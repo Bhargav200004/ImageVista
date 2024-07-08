@@ -42,8 +42,9 @@ import com.example.imagevista.domain.model.UnsplashImage
 fun ImageVistaTopApp(
     modifier: Modifier = Modifier,
     title: String = "Image Vista",
+    scrollBehaviour: TopAppBarScrollBehavior,
     onSearchClick: () -> Unit,
-    scrollBehaviour: TopAppBarScrollBehavior
+    navigationIcon: @Composable () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -71,7 +72,8 @@ fun ImageVistaTopApp(
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             scrolledContainerColor = MaterialTheme.colorScheme.background
-        )
+        ),
+        navigationIcon = navigationIcon
     )
 }
 

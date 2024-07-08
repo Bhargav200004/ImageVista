@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -18,9 +17,11 @@ import com.example.imagevista.domain.model.UnsplashImage
 fun ImageVerticalGrid(
     modifier: Modifier = Modifier,
     images : LazyPagingItems<UnsplashImage>,
+    favoriteImageIds : List<String>,
     onImageClickable : (String) -> Unit,
     onImageDragStart : (UnsplashImage?) -> Unit,
-    onImageDragEnd : () -> Unit
+    onImageDragEnd : () -> Unit,
+    onToggleFavoriteStatus : (UnsplashImage) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         modifier = modifier,
@@ -42,7 +43,9 @@ fun ImageVerticalGrid(
                             onDragEnd = {onImageDragEnd()},
                             onDrag = {_,_->}
                         )
-                    }
+                    },
+                onToggleFavoriteStatus = { image?.let{ onToggleFavoriteStatus(it) } },
+                isFavorite = favoriteImageIds.contains(image?.id)
             )
         }
     }
