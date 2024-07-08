@@ -141,8 +141,8 @@ fun SearchScreen(
                     items(searchKeywords){ keyword->
                         SuggestionChip(
                             onClick = {
-                                onSearch(searchQuery)
                                 onSearchQueryChange(keyword)
+                                onSearch(keyword)
                                 keyboardController?.hide()
                                 focusManager.clearFocus()
                             },
