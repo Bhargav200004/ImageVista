@@ -11,12 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.example.imagevista.domain.model.UnsplashImage
 
 @Composable
 fun ImageVerticalGrid(
     modifier: Modifier = Modifier,
-    images : List<UnsplashImage?>,
+    images : LazyPagingItems<UnsplashImage>,
     onImageClickable : (String) -> Unit,
     onImageDragStart : (UnsplashImage?) -> Unit,
     onImageDragEnd : () -> Unit
@@ -28,20 +29,21 @@ fun ImageVerticalGrid(
         verticalItemSpacing = 10.dp,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-       items(images){ image->
-           ImageCard(
-               image = image,
-               modifier = Modifier
-                   .clickable { image?.id?.let{onImageClickable(it)} }
-                   .pointerInput(Unit) {
+        items(count = images.itemCount){index ->
+            val image = images[index]
+            ImageCard(
+                image = image,
+                modifier = Modifier
+                    .clickable { image?.id?.let{onImageClickable(it)} }
+                    .pointerInput(Unit) {
                         detectDragGesturesAfterLongPress (
                             onDragStart = {onImageDragStart(image)},
                             onDragCancel = {onImageDragEnd()},
                             onDragEnd = {onImageDragEnd()},
                             onDrag = {_,_->}
                         )
-                   }
-           )
-       }
+                    }
+            )
+        }
     }
 }

@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
             var message by rememberSaveable { mutableStateOf("") }
             var backgroundColor by remember { mutableStateOf(Color.Red) }
 
+
             LaunchedEffect(key1 = status) {
                 when (status) {
                     NetworkStatus.Connected -> {
@@ -77,6 +78,8 @@ class MainActivity : ComponentActivity() {
                 val snackBarHostState = remember { SnackbarHostState() }
 
 
+                var searchQuery by rememberSaveable { mutableStateOf("") }
+
                 Scaffold(
                     snackbarHost = { SnackbarHost(hostState = snackBarHostState)},
                     modifier = Modifier
@@ -93,7 +96,9 @@ class MainActivity : ComponentActivity() {
                     NavGraphSetup(
                         snackBarHostState = snackBarHostState,
                         navController = navController,
-                        scrollBehaviour = scrollBehaviour
+                        scrollBehaviour = scrollBehaviour,
+                        searchQuery =searchQuery,
+                        onSearchQueryChange = {searchQuery = it}
                     )
 
                 }
