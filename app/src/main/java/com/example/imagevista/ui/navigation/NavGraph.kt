@@ -37,16 +37,21 @@ fun NavGraphSetup(
     ) {
         composable<Routes.HomeScreen> {
             val homeViewModel: HomeScreenViewModel = hiltViewModel()
+            val images = homeViewModel.image.collectAsLazyPagingItems()
+            val favoriteImagesIds by homeViewModel.favoriteImageIds.collectAsStateWithLifecycle()
             HomeScreen(
                 snackBarHostState = snackBarHostState,
                 snackBarEvent = homeViewModel.snackBarEvent,
                 scrollBehaviour = scrollBehaviour,
-                image = homeViewModel.image,
+                images = images,
+                favoriteImageIds = favoriteImagesIds,
                 onImageClick = { imageId ->
                     navController.navigate(Routes.FullImageScreen(imageId = imageId))
                 },
                 onSearchClick = { navController.navigate(Routes.SearchScreen) },
-                onFABClick = { navController.navigate(Routes.FavoritesScreen) }
+                onFABClick = { navController.navigate(Routes.FavoritesScreen) },
+                onToggleFavoriteStatus = { homeViewModel.toggleFavoriteStatus(it ) }
+
             )
         }
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.example.imagevista.R
 import com.example.imagevista.domain.model.UnsplashImage
 import com.example.imagevista.ui.component.ImageVerticalGrid
@@ -34,10 +35,12 @@ import kotlinx.coroutines.flow.Flow
 fun HomeScreen(
     snackBarHostState : SnackbarHostState,
     snackBarEvent: Flow<SnackBarEvent>,
-    image: List<UnsplashImage>,
+    scrollBehaviour: TopAppBarScrollBehavior,
+    images: LazyPagingItems<UnsplashImage>,
+    favoriteImageIds: List<String>,
     onImageClick: (String) -> Unit,
     onSearchClick: () -> Unit,
-    scrollBehaviour: TopAppBarScrollBehavior,
+    onToggleFavoriteStatus: (UnsplashImage) -> Unit,
     onFABClick : () -> Unit
 ) {
 
@@ -64,17 +67,19 @@ fun HomeScreen(
                 scrollBehaviour = scrollBehaviour,
                 onSearchClick = onSearchClick
             )
-//            ImageVerticalGrid(
-//                images = image,
-//                onImageClickable = onImageClick,
-//                onImageDragStart = {image ->
-//                    activeImage = image
-//                    showImagePreview = true
-//                },
-//                onImageDragEnd ={
-//                    showImagePreview = false
-//                }
-//            )
+            ImageVerticalGrid(
+                images = images,
+                onImageClickable = onImageClick,
+                favoriteImageIds = favoriteImageIds,
+                onImageDragStart = { image ->
+                    activeImage = image
+                    showImagePreview = true
+                },
+                onImageDragEnd = {
+                    showImagePreview = false
+                },
+                onToggleFavoriteStatus = onToggleFavoriteStatus
+            )
         }
         FloatingActionButton(
             modifier = Modifier
